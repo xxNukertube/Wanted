@@ -1,0 +1,7 @@
+# Ignorar arquivos de sistema e IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Ignorar node_modules caso alguém tente rodar localmente com npm
+node_modules/

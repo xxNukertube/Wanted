@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanted APP - Gerador Operacional</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PDF.js para leitura local de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Wanted APP</h1>
+            <span class="badge">Uso Institucional</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="security-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Ambiente Seguro: Dados processados localmente. Nenhuma informação é enviada para servidores.
+        </div>
+
+        <main>
+            <!-- Coluna Esquerda: Entrada de Dados -->
+            <section class="input-section">
+                <form id="operationalForm">
+                    <!-- Upload PDF e Extração -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">1. Dados do Mandado</h2>
+                        </div>
+                        
+                        <div class="upload-area" id="pdfArea" style="margin-bottom: 1rem;">
+                            <input type="file" id="pdfInput" accept="application/pdf" hidden>
+                            <label for="pdfInput" style="cursor: pointer; width: 100%; height: 100%; display: block;">
+                                <div class="upload-icon">📄</div>
+                                <p>Clique ou arraste o PDF do mandado aqui</p>
+                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                    Leitura automática dos dados via PDF.js
+                                </p>
+                            </label>
+                        </div>
+                        <div id="pdfInfo" class="file-info">
+                            <span id="pdfName">arquivo.pdf</span>
+                            <span style="color: var(--success-color)">✓ Processado</span>
+                        </div>
+                        <div id="extractionStatus" class="hidden" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--success-color); text-align: center;">
+                            ✓ Dados extraídos com sucesso do PDF!
+                        </div>
+                    </div>
+
+                    <!-- Dados do Procurado -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">2. Dados do Procurado</h2>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nome">Nome Completo *</label>
+                            <input type="text" id="nome" required placeholder="NOME DO ALVO">
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="mae">Nome da Mãe</label>
+                                <input type="text" id="mae">
+                            </div>
+                            <div class="form-group">
+                                <label for="pai">Nome do Pai</label>
+                                <input type="text" id="pai">
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="nascimento">Data de Nascimento</label>
+                                <input type="text" id="nascimento" placeholder="DD/MM/AAAA">
+                            </div>
+                            <div class="form-group">
+                                <label for="documento">CPF / RG</label>
+                                <input type="text" id="documento" placeholder="000.000.000-00">
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="telefone">Telefone</label>
+                                <input type="text" id="telefone" placeholder="(XX) XXXXX-XXXX">
+                            </div>
+                             <div class="form-group">
+                                <label for="mandado">Nº do Mandado</label>
+                                <input type="text" id="mandado">
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="processo">Nº do Processo</label>
+                                <input type="text" id="processo">
+                            </div>
+                            <div class="form-group">
+                                <label for="validade">Validade do Mandado</label>
+                                <input type="text" id="validade" placeholder="DD/MM/AAAA">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="crimes">Crimes / Artigos *</label>
+                            <textarea id="crimes" rows="3" placeholder="Ex: Homicídio (Art. 121), Tráfico..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Grau de Risco</label>
+                            <div class="risk-selector">
+                                <label class="risk-option" data-value="baixo">
+                                    <input type="radio" name="risco" value="baixo">
+                                    BAIXO
+                                </label>
+                                <label class="risk-option" data-value="medio">
+                                    <input type="radio" name="risco" value="medio" checked>
+                                    MÉDIO
+                                </label>
+                                <label class="risk-option" data-value="alto">
+                                    <input type="radio" name="risco" value="alto">
+                                    ALTO
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Foto -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">3. Foto do Alvo</h2>
+                        </div>
+                        <div class="upload-area" id="photoArea">
+                            <input type="file" id="photoInput" accept="image/*" hidden>
+                            <label for="photoInput" style="cursor: pointer; width: 100%; height: 100%; display: block;">
+                                <div class="upload-icon">📷</div>
+                                <p>Clique ou arraste a foto aqui</p>
+                            </label>
+                        </div>
+                        <div id="photoPreviewContainer" class="photo-preview-container">
+                            <img id="photoPreview" alt="Pré-visualização">
+                        </div>
+                    </div>
+
+                    <!-- Informações Complementares -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">4. Informações Complementares</h2>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-group">
+                                <input type="checkbox" id="vehicleCheck">
+                                <span>Possui Veículo Conhecido?</span>
+                            </label>
+                        </div>
+
+                        <div id="vehicleSection" class="hidden" style="margin-bottom: 1.5rem; padding-left: 1rem; border-left: 2px solid var(--border-color);">
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label for="placa">Placa</label>
+                                    <input type="text" id="placa" placeholder="ABC-1234">
+                                </div>
+                                <div class="form-group">
+                                    <label for="modelo">Modelo</label>
+                                    <input type="text" id="modelo" placeholder="Ex: GOL PRATA">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cor">Cor</label>
+                                <input type="text" id="cor">
+                            </div>
+                            <div class="form-group">
+                                <label for="obsVeiculo">Obs. Veículo</label>
+                                <input type="text" id="obsVeiculo">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="enderecos">Endereços / Área de Atuação</label>
+                            <textarea id="enderecos" rows="3" placeholder="Ex: Rua X, Bairro Y..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="obs">Observações Operacionais</label>
+                            <textarea id="obs" rows="3" placeholder="Tatuagens, comparsas, etc..."></textarea>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="orgao">Órgão Emissor (Opcional)</label>
+                                <input type="text" id="orgao">
+                            </div>
+                            <div class="form-group">
+                                <label for="difusao">Nº Difusão (Opcional)</label>
+                                <input type="text" id="difusao">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" id="generateBtn" class="btn btn-primary btn-full">
+                            GERAR IMAGEM OPERACIONAL
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="button" id="clearBtn" class="btn btn-danger btn-full">
+                            LIMPAR DADOS E MEMÓRIA
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Coluna Direita: Resultado -->
+            <section id="resultSection" class="hidden">
+                <div class="card" style="position: sticky; top: 20px;">
+                    <div class="card-header">
+                        <h2 class="card-title">Resultado</h2>
+                        <button id="downloadBtn" class="btn btn-primary" style="font-size: 0.875rem;">
+                            BAIXAR PNG
+                        </button>
+                    </div>
+                    
+                    <div class="canvas-container">
+                        <canvas id="resultCanvas"></canvas>
+                    </div>
+
+                    <div id="hashDisplay" class="hash-display hidden">
+                        <div>INTEGRIDADE (SHA-256):</div>
+                        <div id="hashValue" style="font-size: 0.7em; margin-top: 5px; color: var(--primary-color);"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Aplicação Client-Side Segura - v1.0</p>
+            <p style="margin-top: 0.5rem; opacity: 0.6;">Este software não coleta dados.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

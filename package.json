@@ -1,0 +1,11 @@
+{
+  "name": "gerador-imagem-operacional",
+  "version": "1.0.0",
+  "description": "Aplicação segura para geração de imagens operacionais de segurança pública",
+  "scripts": {
+    "start": "npx serve . -l 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}
